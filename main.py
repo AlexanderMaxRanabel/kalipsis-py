@@ -7,6 +7,8 @@ from OpenGL.GLU import *
 import math
 
 camera_pos = [0.0, 0.0, 0.0]
+player_pos = [0, 0, 0]
+camera_rot = [0.0, 0.0]
 
 start_position = [0.0, 0.0, 0.0]
 
@@ -29,7 +31,7 @@ def calculate_look_position(camera_pos, camera_rot):
 
 
 vertices = [
-    (1, -1, -1),
+    (player_pos[0] + 1, player_pos[1] - 1, player_pos[2] - 1),
     (1, 1, -1),
     (-1, 1, -1),
     (-1, -1, -1),
@@ -54,7 +56,6 @@ edges = [
     (3, 7),
 ]
 
-print(edges[0][0])
 
 # Function to draw the cube
 def draw_cube(vertices):
@@ -75,8 +76,6 @@ display = (1920, 1080)
 pygame.display.set_mode(display, DOUBLEBUF | OPENGL)
 gluPerspective(90, (display[0] / display[1]), 0.2, 50.0)
 
-player_pos = [0, 0, 0]
-camera_rot = [0.0, 0.0]
 
 # Set up the perspective projection
 """gluPerspective(45, (display[0] / display[1]), 0.2, 50.0)
@@ -93,6 +92,8 @@ cubes = [
 ]
 
 rotate = True
+
+position = [0.0, 0.0, 0.0]
 
 clock = pygame.time.Clock()
 while running:
@@ -153,7 +154,8 @@ while running:
             elif event.key == pygame.K_r:
                 glRotatef(1, 3, 1, 1)
             elif event.key == pygame.K_g:
-                cubes.append([(player_pos[0], player_pos[1], player_pos[2]) for (x, y, z) in vertices])
+                position = calculate_look_position(camera_pos, camera_rot)
+                cubes.append([(x + camera_pos, y + camera_pos[1], z + camera_pos[2]) for (x, y, z) in vertices])
 
     # Clear the screen and redraw the cubes with rotation
     glTranslatef(camera_pos[0], camera_pos[1], camera_pos[2])
